@@ -16,15 +16,15 @@ import {
   ChevronRight,
   Zap,
 } from "lucide-react";
-import { ROADMAP_TRACKS } from "@/data/roadmaps";
+import { roadmapTracks } from "@/data/roadmaps";
 import { RoadmapNode } from "@/types";
 
 export default function RoadmapOverview() {
-  const [activeTrackId, setActiveTrackId] = useState<string>("frontend");
+  const [activeTrackId, setActiveTrackId] = useState<string>("frontend-architect");
   const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
 
   const activeTrack =
-    ROADMAP_TRACKS.find((t) => t.id === activeTrackId) || ROADMAP_TRACKS[0];
+    roadmapTracks?.find((t) => t.id === activeTrackId) || roadmapTracks?.[0];
 
   const getNodeStatusBadge = (status?: string) => {
     switch (status) {
@@ -88,7 +88,7 @@ export default function RoadmapOverview() {
 
         {/* Track Switcher Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-8 no-scrollbar">
-          {ROADMAP_TRACKS.map((track) => (
+          {roadmapTracks.map((track) => (
             <button
               key={track.id}
               type="button"
