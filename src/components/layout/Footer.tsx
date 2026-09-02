@@ -169,7 +169,7 @@ export default function Footer() {
             </p>
             <div className="space-y-2.5 text-xs">
               <a
-                href="https://github.com/kchayta32/K-Tech"
+                href="https://github.com/kchayta32/K-Tech-II"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all group"
@@ -178,14 +178,14 @@ export default function Footer() {
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-xs">GitHub Repository</p>
                   <p className="text-[10px] text-slate-500 font-mono truncate">
-                    kchayta32/K-Tech
+                    kchayta32/K-Tech-II
                   </p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
               </a>
 
               <a
-                href="https://k-tech.vercel.app/"
+                href="https://k-tech-ii.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all group"
@@ -196,7 +196,7 @@ export default function Footer() {
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-xs">Vercel Deployment</p>
                   <p className="text-[10px] text-slate-500 font-mono truncate">
-                    k-tech.vercel.app
+                    k-tech-ii.vercel.app
                   </p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-500" />

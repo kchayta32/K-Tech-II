@@ -272,7 +272,7 @@ export default function CommunityStats() {
 
             <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
               <a
-                href="https://github.com/kchayta32/K-Tech"
+                href="https://github.com/kchayta32/K-Tech-II"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all shadow-md"

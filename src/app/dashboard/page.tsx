@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useProgress } from "@/lib/progress-context";
-import { allCourses, getCourseById } from "@/data";
+import { allCourses, getCourseById, getCourseBySlug } from "@/data";
 import { calculateLevel, formatTime } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -39,11 +39,11 @@ export default function DashboardPage() {
   const streak = profile?.streakDays || 1;
 
   const enrolledCourseObjects = (profile?.enrolledCourses || [])
-    .map((id) => getCourseById(id))
+    .map((id) => getCourseById(id) || getCourseBySlug(id))
     .filter(Boolean);
 
   const bookmarkedCourseObjects = (profile?.bookmarks || [])
-    .map((id) => getCourseById(id))
+    .map((id) => getCourseById(id) || getCourseBySlug(id))
     .filter(Boolean);
 
   return (

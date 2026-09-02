@@ -24,17 +24,26 @@ export default function CertificateVerificationPage() {
 
   const foundCert = certificates.find((c) => c.verificationCode === certCode);
 
+  const defaultDate = "1 มกราคม 2026";
+  const [issueDate, setIssueDate] = React.useState<string>(defaultDate);
+
+  React.useEffect(() => {
+    setIssueDate(
+      new Date().toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    );
+  }, []);
+
   // Fallback demo certificate if accessed directly
   const cert = foundCert || {
     id: "cert-demo",
     courseId: "svelte-5-complete-mastery",
     courseTitle: "Svelte 5 & SvelteKit: Full-Stack Reactive Web Engineering",
     studentName: "K-Tech Member",
-    issueDate: new Date().toLocaleDateString("th-TH", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }),
+    issueDate: issueDate,
     verificationCode: certCode || "KT-SVE-2026-X99",
     grade: "เกียรตินิยมอันดับ 1 (Distinction with Honors)",
     skills: ["Svelte 5 Runes", "SvelteKit SSR", "Reactive Stores", "Component Architecture", "TypeScript"],

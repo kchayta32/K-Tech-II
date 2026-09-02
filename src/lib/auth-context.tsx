@@ -35,14 +35,14 @@ const defaultProfile: UserProfile = {
   level: 2,
   streakDays: 4,
   lastActiveDate: new Date().toISOString(),
-  enrolledCourses: ["svelte-fundamentals", "typescript-mastery", "docker-k8s-mastery"],
-  completedLessons: ["svelte-fundamentals:s1-1", "svelte-fundamentals:s1-2", "typescript-mastery:ts1-1"],
+  enrolledCourses: ["svelte-5-complete-mastery", "typescript-advanced-patterns", "docker-container-engineering"],
+  completedLessons: ["svelte-5-complete-mastery:svelte-runes-state-derived", "svelte-5-complete-mastery:svelte-props-snippets", "typescript-advanced-patterns:ts-generics-constraints"],
   quizScores: {
-    "svelte-fundamentals:s1-2": 100,
-    "typescript-mastery:ts1-1": 90,
+    "svelte-5-complete-mastery:svelte-runes-state-derived": 100,
+    "typescript-advanced-patterns:ts-generics-constraints": 90,
   },
   completedCourses: [],
-  bookmarks: ["nest-backend", "kafka-streams"],
+  bookmarks: ["nestjs-enterprise-architecture", "kafka-event-streaming-architecture"],
   notes: {},
   badges: [
     {
@@ -66,6 +66,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const LOCAL_STORAGE_KEY = "ktech_user_profile";
 
+function sanitizeProfile(raw: Partial<UserProfile> | null): UserProfile {
+  if (!raw || typeof raw !== "object") return defaultProfile;
+  return {
+    ...defaultProfile,
+    ...raw,
+    enrolledCourses: Array.isArray(raw.enrolledCourses) ? raw.enrolledCourses : defaultProfile.enrolledCourses,
+    completedLessons: Array.isArray(raw.completedLessons) ? raw.completedLessons : defaultProfile.completedLessons,
+    completedCourses: Array.isArray(raw.completedCourses) ? raw.completedCourses : [],
+    bookmarks: Array.isArray(raw.bookmarks) ? raw.bookmarks : defaultProfile.bookmarks,
+    badges: Array.isArray(raw.badges) ? raw.badges : defaultProfile.badges,
+    notes: typeof raw.notes === "object" && raw.notes !== null ? raw.notes : {},
+    quizScores: typeof raw.quizScores === "object" && raw.quizScores !== null ? raw.quizScores : {},
+  };
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -77,7 +92,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
         try {
-          setProfile(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          const sanitized = sanitizeProfile(parsed);
+          setProfile(sanitized);
         } catch {
           setProfile(defaultProfile);
         }
@@ -92,14 +109,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(firebaseUser);
         if (firebaseUser) {
           setProfile((prev) => {
-            const updated: UserProfile = {
+            const updated: UserProfile = sanitizeProfile({
               ...(prev || defaultProfile),
               uid: firebaseUser.uid,
               email: firebaseUser.email,
               displayName: firebaseUser.displayName || prev?.displayName || "K-Tech Member",
               photoURL: firebaseUser.photoURL || prev?.photoURL || null,
               isGuest: false,
-            };
+            });
             if (typeof window !== "undefined") {
               localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
             }

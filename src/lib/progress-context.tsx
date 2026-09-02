@@ -56,14 +56,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   };
 
   const isLessonCompleted = (courseId: string, lessonId: string) => {
-    if (!profile) return false;
+    if (!profile || !profile.completedLessons) return false;
     const key = `${courseId}:${lessonId}`;
-    return profile.completedLessons.includes(key);
+    return (profile.completedLessons || []).includes(key);
   };
 
   const getCourseProgress = (courseId: string, totalLessons: number) => {
-    if (!profile || totalLessons === 0) return 0;
-    const completedCount = profile.completedLessons.filter((item) =>
+    if (!profile || totalLessons === 0 || !profile.completedLessons) return 0;
+    const completedCount = (profile.completedLessons || []).filter((item) =>
       item.startsWith(`${courseId}:`)
     ).length;
     return Math.min(100, Math.round((completedCount / totalLessons) * 100));
@@ -72,12 +72,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const completeLesson = (courseId: string, lessonId: string, xpReward = 50) => {
     if (!profile) return;
     const key = `${courseId}:${lessonId}`;
-    if (!profile.completedLessons.includes(key)) {
-      const updatedCompleted = [...profile.completedLessons, key];
-      const newXp = profile.xp + xpReward;
-      const enrolled = profile.enrolledCourses.includes(courseId)
-        ? profile.enrolledCourses
-        : [...profile.enrolledCourses, courseId];
+    const completedList = profile.completedLessons || [];
+    if (!completedList.includes(key)) {
+      const updatedCompleted = [...completedList, key];
+      const newXp = (profile.xp || 0) + xpReward;
+      const enrolledList = profile.enrolledCourses || [];
+      const enrolled = enrolledList.includes(courseId)
+        ? enrolledList
+        : [...enrolledList, courseId];
 
       updateGuestProfile({
         completedLessons: updatedCompleted,
@@ -92,14 +94,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const saveQuizScore = (courseId: string, lessonId: string, score: number) => {
     if (!profile) return;
     const key = `${courseId}:${lessonId}`;
-    const updatedScores = { ...profile.quizScores, [key]: score };
+    const updatedScores = { ...(profile.quizScores || {}), [key]: score };
     let xpBonus = 0;
     if (score >= 80) xpBonus = 100;
     else if (score >= 50) xpBonus = 50;
 
     updateGuestProfile({
       quizScores: updatedScores,
-      xp: profile.xp + xpBonus,
+      xp: (profile.xp || 0) + xpBonus,
     });
     if (score >= 80) {
       triggerConfetti();
@@ -107,7 +109,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getQuizScore = (courseId: string, lessonId: string) => {
-    if (!profile) return undefined;
+    if (!profile || !profile.quizScores) return undefined;
     const key = `${courseId}:${lessonId}`;
     return profile.quizScores[key];
   };
@@ -115,40 +117,42 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const saveLessonNote = (courseId: string, lessonId: string, note: string) => {
     if (!profile) return;
     const key = `${courseId}:${lessonId}`;
-    const updatedNotes = { ...profile.notes, [key]: note };
+    const updatedNotes = { ...(profile.notes || {}), [key]: note };
     updateGuestProfile({ notes: updatedNotes });
   };
 
   const getLessonNote = (courseId: string, lessonId: string) => {
-    if (!profile) return "";
+    if (!profile || !profile.notes) return "";
     const key = `${courseId}:${lessonId}`;
     return profile.notes[key] || "";
   };
 
   const isBookmarked = (courseId: string) => {
-    return profile?.bookmarks.includes(courseId) || false;
+    return (profile?.bookmarks || []).includes(courseId);
   };
 
   const toggleBookmark = (courseId: string) => {
     if (!profile) return;
-    const exists = profile.bookmarks.includes(courseId);
+    const bookmarksList = profile.bookmarks || [];
+    const exists = bookmarksList.includes(courseId);
     const updated = exists
-      ? profile.bookmarks.filter((id) => id !== courseId)
-      : [...profile.bookmarks, courseId];
+      ? bookmarksList.filter((id) => id !== courseId)
+      : [...bookmarksList, courseId];
     updateGuestProfile({ bookmarks: updated });
   };
 
   const enrollInCourse = (courseId: string) => {
     if (!profile) return;
-    if (!profile.enrolledCourses.includes(courseId)) {
+    const enrolledList = profile.enrolledCourses || [];
+    if (!enrolledList.includes(courseId)) {
       updateGuestProfile({
-        enrolledCourses: [...profile.enrolledCourses, courseId],
+        enrolledCourses: [...enrolledList, courseId],
       });
     }
   };
 
   const isEnrolled = (courseId: string) => {
-    return profile?.enrolledCourses.includes(courseId) || false;
+    return (profile?.enrolledCourses || []).includes(courseId);
   };
 
   const claimCertificate = (courseId: string, courseTitle: string, skills: string[]) => {
