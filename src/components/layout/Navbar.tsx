@@ -102,6 +102,7 @@ export default function Navbar() {
     { label: "หลักสูตรทั้งหมด", href: "/courses", icon: BookOpen },
     { label: "แผนผังการเรียน (Roadmaps)", href: "/roadmaps", icon: Compass },
     { label: "Playground", href: "/playground", icon: Terminal },
+    { label: "GPA Calculator", href: "/tools/gpa-calculator", icon: Terminal },
     { label: "แดชบอร์ด", href: "/dashboard", icon: LayoutDashboard },
   ];
 
